@@ -87,6 +87,7 @@ public class InvocationRegistry implements Iterable<Invocation>, StaticMetricsPr
         this.invocations = new ConcurrentHashMap<>(INITIAL_CAPACITY, LOAD_FACTOR, concurrencyLevel);
     }
 
+
     @Override
     public void provideStaticMetrics(MetricsRegistry registry) {
         registry.registerStaticMetrics(this, OPERATION_PREFIX);
