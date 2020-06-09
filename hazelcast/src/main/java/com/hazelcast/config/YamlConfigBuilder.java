@@ -139,7 +139,7 @@ public class YamlConfigBuilder extends AbstractYamlConfigBuilder implements Conf
         return config;
     }
 
-    private void parseAndBuildConfig(Config config) throws Exception {
+    public void parseAndBuildConfig(Config config) throws Exception {
         YamlMapping yamlRootNode;
         try {
             yamlRootNode = ((YamlMapping) YamlLoader.load(in));
@@ -160,6 +160,21 @@ public class YamlConfigBuilder extends AbstractYamlConfigBuilder implements Conf
 
         new YamlMemberDomConfigProcessor(true, config).buildConfig(w3cRootNode);
     }
+    public void parseAndBuildConfig(Config config, YamlMapping yamlRootNode) throws Exception {
+        YamlNode imdgRoot = yamlRootNode.childAsMapping(ConfigSections.HAZELCAST.getName());
+        if (imdgRoot == null) {
+            imdgRoot = yamlRootNode;
+        }
+
+        YamlDomChecker.check(imdgRoot);
+
+        Node w3cRootNode = asW3cNode(imdgRoot);
+        replaceVariables(w3cRootNode);
+        importDocuments(imdgRoot);
+
+        new YamlMemberDomConfigProcessor(true, config).buildConfig(w3cRootNode);
+    }
+
 
     public YamlConfigBuilder setProperties(Properties properties) {
         setPropertiesInternal(properties);

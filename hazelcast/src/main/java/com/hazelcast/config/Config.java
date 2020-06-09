@@ -43,6 +43,7 @@ import com.hazelcast.internal.config.SetConfigReadOnly;
 import com.hazelcast.internal.config.TopicConfigReadOnly;
 import com.hazelcast.internal.config.XmlConfigLocator;
 import com.hazelcast.internal.config.YamlConfigLocator;
+import com.hazelcast.internal.env.EnvConfigBuilder;
 import com.hazelcast.internal.util.Preconditions;
 import com.hazelcast.map.IMap;
 import com.hazelcast.multimap.MultiMap;
@@ -198,6 +199,10 @@ public class Config {
      * @return Config created from a file when exists, otherwise default.
      */
     public static Config load() {
+        return new EnvConfigBuilder().overwrite(locatedAndLoad());
+    }
+
+    private static Config locatedAndLoad() {
         validateSuffixInSystemProperty(SYSPROP_MEMBER_CONFIG);
 
         XmlConfigLocator xmlConfigLocator = new XmlConfigLocator();
@@ -221,6 +226,8 @@ public class Config {
             return new XmlConfigBuilder(xmlConfigLocator).build();
         }
     }
+
+
 
     /**
      * Returns the class-loader that will be used in serialization.

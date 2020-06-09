@@ -54,14 +54,16 @@ public class ExceptionUtilTest extends HazelcastTestSupport {
     public void testPeel_whenThrowableIsRuntimeException_thenReturnOriginal() {
         RuntimeException result = ExceptionUtil.peel(throwable);
 
-        assertEquals(throwable, result);
+        assertEquals(throwable.getMessage(), result.getMessage());
+        assertEquals(throwable.getClass(), result.getClass());
     }
 
     @Test
     public void testPeel_whenThrowableIsExecutionException_thenReturnCause() {
         RuntimeException result = ExceptionUtil.peel(new ExecutionException(throwable));
 
-        assertEquals(throwable, result);
+        assertEquals(throwable.getMessage(), result.getMessage());
+        assertEquals(throwable.getClass(), result.getClass());
     }
 
     @Test
@@ -77,12 +79,7 @@ public class ExceptionUtilTest extends HazelcastTestSupport {
     public void testPeel_whenThrowableIsExecutionExceptionWithCustomFactory_thenReturnCustomException() {
         IOException expectedException = new IOException();
         RuntimeException result = (RuntimeException) ExceptionUtil.peel(new ExecutionException(expectedException),
-                null, null, new ExceptionUtil.RuntimeExceptionFactory() {
-                    @Override
-                    public RuntimeException create(Throwable throwable, String message) {
-                        return new IllegalStateException(message, throwable);
-                    }
-                });
+                null, null, (throwable, message) -> new IllegalStateException(message, throwable));
 
         assertEquals(result.getClass(), IllegalStateException.class);
         assertEquals(result.getCause(), expectedException);
