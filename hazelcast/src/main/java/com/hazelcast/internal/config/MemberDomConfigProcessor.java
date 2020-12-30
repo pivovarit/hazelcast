@@ -1354,8 +1354,7 @@ public class MemberDomConfigProcessor extends AbstractDomConfigProcessor {
             Node att = attributes.item(a);
             if (matches("enabled", lowerCaseInternal(att.getNodeName()))) {
                 multicastConfig.setEnabled(getBooleanValue(getTextContent(att)));
-            } else if (matches("loopbackmodeenabled", lowerCaseInternal(att.getNodeName()))
-                    || matches("loopback-mode-enabled", lowerCaseInternal(att.getNodeName()))) {
+            } else if (matches("loopback-mode-enabled", lowerCaseInternal(att.getNodeName()))) {
                 multicastConfig.setLoopbackModeEnabled(getBooleanValue(getTextContent(att)));
             }
         }
