@@ -53,6 +53,21 @@ public class ExternalMemberConfigurationOverrideSystemPropertiesTest extends Haz
     }
 
     @Test
+    public void shouldHandleInterfacesArrayFromSysProperties() {
+        runWithSystemProperties(() -> {
+              Config config = new Config();
+              new ExternalConfigurationOverride().overwriteMemberConfig(config);
+
+              assertTrue(config.getNetworkConfig().getInterfaces().isEnabled());
+              assertTrue(config.getNetworkConfig().getInterfaces().getInterfaces().contains("127.0.0.1"));
+              assertTrue(config.getNetworkConfig().getInterfaces().getInterfaces().contains("127.0.0.2"));
+          },
+          entry("hz.network.interfaces.enabled", "true"),
+          entry("hz.network.interfaces.interfaces.1", "127.0.0.1"),
+          entry("hz.network.interfaces.interfaces.2", "127.0.0.1"));
+    }
+
+    @Test
     public void shouldHandleRestApiConfigFromSysProperties() {
         runWithSystemProperties(() -> {
               Config config = new Config();

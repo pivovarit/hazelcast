@@ -73,6 +73,19 @@ public class ExternalMemberConfigurationOverrideEnvTest extends HazelcastTestSup
     }
 
     @Test
+    public void shouldHandleInterfacesArrayFromEnv() throws Exception {
+        Config config = new Config();
+        withEnvironmentVariable("HZ_NETWORK_INTERFACES_ENABLED", "true")
+          .and("HZ_NETWORK_INTERFACES_INTERFACES_0", "127.0.0.1")
+          .and("HZ_NETWORK_INTERFACES_INTERFACES_1", "127.0.0.2")
+          .execute(() -> new ExternalConfigurationOverride().overwriteMemberConfig(config));
+
+        assertTrue(config.getNetworkConfig().getInterfaces().isEnabled());
+        assertTrue(config.getNetworkConfig().getInterfaces().getInterfaces().contains("127.0.0.1"));
+        assertTrue(config.getNetworkConfig().getInterfaces().getInterfaces().contains("127.0.0.2"));
+    }
+
+    @Test
     public void shouldHandleAdvancedNetworkEndpointConfiguration() throws Exception {
         Config config = new Config();
         config.getAdvancedNetworkConfig().setClientEndpointConfig(new ServerSocketEndpointConfig()
