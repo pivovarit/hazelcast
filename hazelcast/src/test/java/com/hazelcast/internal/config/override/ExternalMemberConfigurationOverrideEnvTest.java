@@ -633,6 +633,16 @@ public class ExternalMemberConfigurationOverrideEnvTest extends HazelcastTestSup
         assertTrue(config.getNetworkConfig().getRestApiConfig().getEnabledGroups().contains(HOT_RESTART));
     }
 
+    @Test
+    public void shouldHandleProperties() throws Exception {
+        Config config = new Config();
+
+        withEnvironmentVariable("HZ_PROPERTIES_FOO", "BAR")
+          .execute(() -> new ExternalConfigurationOverride().overwriteMemberConfig(config));
+
+        assertEquals(config.getProperty("FOO"), "BAR");
+    }
+
     @Test(expected = InvalidConfigurationException.class)
     public void shouldHandleRestApiConfigInvalidEntry() throws Exception {
         Config config = new Config();
